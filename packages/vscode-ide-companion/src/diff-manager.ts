@@ -56,7 +56,7 @@ export class DiffManager {
   private diffDocuments = new Map<string, DiffInfo>();
 
   constructor(
-    private log: (message: string) => void,
+    private readonly log: (message: string) => void,
     private readonly diffContentProvider: DiffContentProvider,
   ) {}
 
