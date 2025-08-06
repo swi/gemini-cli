@@ -34,6 +34,8 @@ import {
 import { DEFAULT_GEMINI_FLASH_MODEL } from '../config/models.js';
 import { hasCycleInSchema } from '../tools/tools.js';
 import { isStructuredError } from '../utils/quotaErrorDetection.js';
+import { getErrorMessage } from '../utils/errors.js';
+import {StructuredError} from './turn.js';
 
 /**
  * Returns true if the response is valid, false otherwise.
@@ -348,10 +350,9 @@ export class GeminiChat {
         this.sendPromise = Promise.resolve();
       });
       return response;
-    } catch (error) {
+    } catch (error: unknown) {
       const durationMs = Date.now() - startTime;
       this._logApiError(durationMs, error, prompt_id);
-      await this.maybeIncludeSchemaDepthContext(error);
       this.sendPromise = Promise.resolve();
       throw error;
     }
@@ -453,7 +454,6 @@ export class GeminiChat {
       const durationMs = Date.now() - startTime;
       this._logApiError(durationMs, error, prompt_id);
       this.sendPromise = Promise.resolve();
-      await this.maybeIncludeSchemaDepthContext(error);
       throw error;
     }
   }
@@ -686,12 +686,11 @@ export class GeminiChat {
     );
   }
 
-  private async maybeIncludeSchemaDepthContext(error: unknown): Promise<void> {
+  async maybeIncludeSchemaDepthContext(error: StructuredError): Promise<void> {
     // Check for potentially problematic cyclic tools with cyclic schemas
     // and include a recommendation to remove potentially problematic tools.
     if (
-      isStructuredError(error) &&
-      error.message.includes('maximum schema depth exceeded')
+      error.message.includes('maximum schema depth exceeded') || error.message.includes('Request contains an invalid argument')
     ) {
       const tools = (await this.config.getToolRegistry()).getAllTools();
       const cyclicSchemaTools: string[] = [];
