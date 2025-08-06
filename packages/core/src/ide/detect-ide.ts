@@ -6,15 +6,18 @@
 
 export enum DetectedIde {
   VSCode = 'vscode',
+  VSCodium = 'vscodium',
   Cursor = 'cursor',
   CloudShell = 'cloudshell',
-  Codespaces = 'codespaces'
+  Codespaces = 'codespaces',
 }
 
 export function getIdeDisplayName(ide: DetectedIde): string {
   switch (ide) {
     case DetectedIde.VSCode:
       return 'VS Code';
+    case DetectedIde.VSCodium:
+      return 'VSCodium';
     case DetectedIde.Cursor:
       return 'Cursor';
     case DetectedIde.CloudShell:
@@ -34,10 +37,13 @@ export function detectIde(): DetectedIde | undefined {
     return DetectedIde.Cursor;
   }
   if (process.env.CODESPACES) {
-    return 
+    return DetectedIde.Codespaces;
   }
   if (process.env.EDITOR_IN_CLOUD_SHELL === 'true') {
     return DetectedIde.CloudShell;
+  }
+  if (process.env.PATH?.includes('vscodium')) {
+    return DetectedIde.VSCodium;
   }
   if (process.env.TERM_PROGRAM === 'vscode') {
     return DetectedIde.VSCode;
