@@ -35,7 +35,7 @@ function isWordChar(ch: string | undefined): boolean {
 
 // Helper functions for line-based word navigation
 export const isWordCharStrict = (char: string): boolean =>
-  /[\w\p{L}\p{N}]/u.test(char);
+  /[\w\p{L}\p{N}]/u.test(char); // Matches a single character that is any Unicode letter, any Unicode number, or an underscore
 
 export const isWhitespace = (char: string): boolean => /\s/.test(char);
 

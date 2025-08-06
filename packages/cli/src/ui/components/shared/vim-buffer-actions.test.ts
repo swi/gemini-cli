@@ -1049,6 +1049,71 @@ describe('vim-buffer-actions', () => {
         expect(eResult).toHaveOnlyValidCharacters();
         expect(eResult.cursorCol).toBe(10); // End of third block sequence
       });
+
+      it('should handle strings starting with Chinese characters', () => {
+        const state = createTestState(['中文test英文word'], 0, 0);
+
+        // Test 'w' command - when at start of non-Latin word, w moves to next word
+        let wResult = handleVimAction(state, {
+          type: 'vim_move_word_forward' as const,
+          payload: { count: 1 },
+        });
+        expect(wResult).toHaveOnlyValidCharacters();
+        expect(wResult.cursorCol).toBe(2); // Start of 'test'
+
+        wResult = handleVimAction(wResult, {
+          type: 'vim_move_word_forward' as const,
+          payload: { count: 1 },
+        });
+        expect(wResult.cursorCol).toBe(6); // Start of '英文'
+
+        // Test 'e' command
+        let eResult = handleVimAction(state, {
+          type: 'vim_move_word_end' as const,
+          payload: { count: 1 },
+        });
+        expect(eResult).toHaveOnlyValidCharacters();
+        expect(eResult.cursorCol).toBe(1); // End of 中文
+
+        eResult = handleVimAction(eResult, {
+          type: 'vim_move_word_end' as const,
+          payload: { count: 1 },
+        });
+        expect(eResult.cursorCol).toBe(5); // End of test
+      });
+
+      it('should handle strings starting with Arabic characters', () => {
+        const state = createTestState(['مرحباhelloسلام'], 0, 0);
+
+        // Test 'w' command - when at start of non-Latin word, w moves to next word
+        let wResult = handleVimAction(state, {
+          type: 'vim_move_word_forward' as const,
+          payload: { count: 1 },
+        });
+        expect(wResult).toHaveOnlyValidCharacters();
+        expect(wResult.cursorCol).toBe(5); // Start of 'hello'
+
+        wResult = handleVimAction(wResult, {
+          type: 'vim_move_word_forward' as const,
+          payload: { count: 1 },
+        });
+        expect(wResult.cursorCol).toBe(10); // Start of 'سلام'
+
+        // Test 'b' command from end
+        const bState = createTestState(['مرحباhelloسلام'], 0, 13);
+        let bResult = handleVimAction(bState, {
+          type: 'vim_move_word_backward' as const,
+          payload: { count: 1 },
+        });
+        expect(bResult).toHaveOnlyValidCharacters();
+        expect(bResult.cursorCol).toBe(10); // Start of سلام
+
+        bResult = handleVimAction(bResult, {
+          type: 'vim_move_word_backward' as const,
+          payload: { count: 1 },
+        });
+        expect(bResult.cursorCol).toBe(5); // Start of hello
+      });
     });
   });
 });
