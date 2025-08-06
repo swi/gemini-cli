@@ -272,6 +272,7 @@ export function useCommandCompletion(
         setSuggestions(finalSuggestions);
         setShowSuggestions(finalSuggestions.length > 0);
         setActiveSuggestionIndex(finalSuggestions.length > 0 ? 0 : -1);
+        setVisibleStartIndex(0);
         setIsLoadingSuggestions(false);
         return;
       }
