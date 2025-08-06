@@ -113,6 +113,7 @@ describe('Settings Loading and Merging', () => {
         customThemes: {},
         mcpServers: {},
         includeDirectories: [],
+        chatCompression: {},
       });
       expect(settings.errors.length).toBe(0);
     });
@@ -147,6 +148,7 @@ describe('Settings Loading and Merging', () => {
         customThemes: {},
         mcpServers: {},
         includeDirectories: [],
+        chatCompression: {},
       });
     });
 
@@ -181,6 +183,7 @@ describe('Settings Loading and Merging', () => {
         customThemes: {},
         mcpServers: {},
         includeDirectories: [],
+        chatCompression: {},
       });
     });
 
@@ -213,6 +216,7 @@ describe('Settings Loading and Merging', () => {
         customThemes: {},
         mcpServers: {},
         includeDirectories: [],
+        chatCompression: {},
       });
     });
 
@@ -251,6 +255,7 @@ describe('Settings Loading and Merging', () => {
         customThemes: {},
         mcpServers: {},
         includeDirectories: [],
+        chatCompression: {},
       });
     });
 
@@ -301,6 +306,7 @@ describe('Settings Loading and Merging', () => {
         customThemes: {},
         mcpServers: {},
         includeDirectories: [],
+        chatCompression: {},
       });
     });
 
@@ -675,15 +681,15 @@ describe('Settings Loading and Merging', () => {
       });
     });
 
-    it('should have chatCompression as undefined if not in any settings file', () => {
+    it('should have chatCompression as an empty object if not in any settings file', () => {
       (mockFsExistsSync as Mock).mockReturnValue(false); // No settings files exist
       (fs.readFileSync as Mock).mockReturnValue('{}');
       const settings = loadSettings(MOCK_WORKSPACE_DIR);
-      expect(settings.merged.chatCompression).toBeUndefined();
+      expect(settings.merged.chatCompression).toEqual({});
     });
 
     it('should ignore chatCompression if contextPercentageThreshold is invalid', () => {
-      const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+      const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => { });
       (mockFsExistsSync as Mock).mockImplementation(
         (p: fs.PathLike) => p === USER_SETTINGS_PATH,
       );
@@ -805,6 +811,7 @@ describe('Settings Loading and Merging', () => {
         customThemes: {},
         mcpServers: {},
         includeDirectories: [],
+        chatCompression: {},
       });
 
       // Check that error objects are populated in settings.errors
@@ -1242,6 +1249,7 @@ describe('Settings Loading and Merging', () => {
           customThemes: {},
           mcpServers: {},
           includeDirectories: [],
+          chatCompression: {},
         });
       });
     });
@@ -1252,7 +1260,7 @@ describe('Settings Loading and Merging', () => {
       (mockFsExistsSync as Mock).mockReturnValue(false);
       const loadedSettings = loadSettings(MOCK_WORKSPACE_DIR);
 
-      vi.mocked(fs.writeFileSync).mockImplementation(() => {});
+      vi.mocked(fs.writeFileSync).mockImplementation(() => { });
       // mkdirSync is mocked in beforeEach to return undefined, which is fine for void usage
 
       loadedSettings.setValue(SettingScope.User, 'theme', 'matrix');
