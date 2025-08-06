@@ -8,6 +8,7 @@ export enum DetectedIde {
   VSCode = 'vscode',
   Cursor = 'cursor',
   CloudShell = 'cloudshell',
+  Codespaces = 'codespaces'
 }
 
 export function getIdeDisplayName(ide: DetectedIde): string {
@@ -18,6 +19,8 @@ export function getIdeDisplayName(ide: DetectedIde): string {
       return 'Cursor';
     case DetectedIde.CloudShell:
       return 'Cloud Shell';
+    case DetectedIde.Codespaces:
+      return 'GitHub Codespaces';
     default: {
       // This ensures that if a new IDE is added to the enum, we get a compile-time error.
       const exhaustiveCheck: never = ide;
@@ -29,6 +32,9 @@ export function getIdeDisplayName(ide: DetectedIde): string {
 export function detectIde(): DetectedIde | undefined {
   if (process.env.CURSOR_TRACE_ID) {
     return DetectedIde.Cursor;
+  }
+  if (process.env.CODESPACES) {
+    return 
   }
   if (process.env.EDITOR_IN_CLOUD_SHELL === 'true') {
     return DetectedIde.CloudShell;
