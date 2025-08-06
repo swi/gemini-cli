@@ -200,7 +200,7 @@ export class LoadedSettings {
         ...(system.chatCompression || {}),
         ...(user.chatCompression || {}),
         ...(workspace.chatCompression || {}),
-      }
+      },
     };
   }
 
@@ -491,14 +491,13 @@ export function loadSettings(workspaceDir: string): LoadedSettings {
 
   // Validate chatCompression settings
   const chatCompression = loadedSettings.merged.chatCompression;
+  const threshold = chatCompression?.contextPercentageThreshold;
   if (
-    chatCompression &&
-    chatCompression.contextPercentageThreshold &&
-    (chatCompression.contextPercentageThreshold < 0 ||
-      chatCompression.contextPercentageThreshold > 1)
+    threshold != null &&
+    (typeof threshold !== 'number' || threshold < 0 || threshold > 1)
   ) {
     console.warn(
-      `Invalid value for chatCompression.contextPercentageThreshold: "${chatCompression.contextPercentageThreshold}". Please use a value between 0 and 1. Using default compression settings.`,
+      `Invalid value for chatCompression.contextPercentageThreshold: "${threshold}". Please use a value between 0 and 1. Using default compression settings.`,
     );
     delete loadedSettings.merged.chatCompression;
   }

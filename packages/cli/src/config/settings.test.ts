@@ -706,6 +706,32 @@ describe('Settings Loading and Merging', () => {
       warnSpy.mockRestore();
     });
 
+    it('should deep merge chatCompression settings', () => {
+      (mockFsExistsSync as Mock).mockReturnValue(true);
+      const userSettingsContent = {
+        chatCompression: { contextPercentageThreshold: 0.5 },
+      };
+      const workspaceSettingsContent = {
+        chatCompression: {},
+      };
+
+      (fs.readFileSync as Mock).mockImplementation(
+        (p: fs.PathOrFileDescriptor) => {
+          if (p === USER_SETTINGS_PATH)
+            return JSON.stringify(userSettingsContent);
+          if (p === MOCK_WORKSPACE_SETTINGS_PATH)
+            return JSON.stringify(workspaceSettingsContent);
+          return '{}';
+        },
+      );
+
+      const settings = loadSettings(MOCK_WORKSPACE_DIR);
+
+      expect(settings.merged.chatCompression).toEqual({
+        contextPercentageThreshold: 0.5,
+      });
+    });
+
     it('should merge includeDirectories from all scopes', () => {
       (mockFsExistsSync as Mock).mockReturnValue(true);
       const systemSettingsContent = {
