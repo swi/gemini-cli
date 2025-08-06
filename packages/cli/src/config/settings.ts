@@ -13,6 +13,7 @@ import {
   GEMINI_CONFIG_DIR as GEMINI_DIR,
   getErrorMessage,
   BugCommandSettings,
+  ChatCompressionSettings,
   TelemetrySettings,
   AuthType,
 } from '@google/gemini-cli-core';
@@ -133,6 +134,8 @@ export interface Settings {
   includeDirectories?: string[];
 
   loadMemoryFromIncludeDirectories?: boolean;
+
+  chatCompression?: ChatCompressionSettings;
 }
 
 export interface SettingsError {
