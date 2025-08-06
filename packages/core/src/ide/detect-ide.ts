@@ -6,6 +6,7 @@
 
 export enum DetectedIde {
   VSCode = 'vscode',
+  Cursor = 'cursor',
   CloudShell = 'cloudshell',
 }
 
@@ -13,6 +14,8 @@ export function getIdeDisplayName(ide: DetectedIde): string {
   switch (ide) {
     case DetectedIde.VSCode:
       return 'VS Code';
+    case DetectedIde.Cursor:
+      return 'Cursor';
     case DetectedIde.CloudShell:
       return 'Cloud Shell';
     default: {
@@ -24,6 +27,9 @@ export function getIdeDisplayName(ide: DetectedIde): string {
 }
 
 export function detectIde(): DetectedIde | undefined {
+  if (process.env.CURSOR_TRACE_ID) {
+    return DetectedIde.Cursor;
+  }
   if (process.env.EDITOR_IN_CLOUD_SHELL === 'true') {
     return DetectedIde.CloudShell;
   }
