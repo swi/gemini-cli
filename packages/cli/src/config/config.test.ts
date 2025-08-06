@@ -1112,12 +1112,12 @@ describe('loadCliConfig chatCompression', () => {
     const argv = await parseArguments();
     const settings: Settings = {
       chatCompression: {
-        maxContextSize: 5000,
+        contextPercentageThreshold: 0.5,
       },
     };
     const config = await loadCliConfig(settings, [], 'test-session', argv);
     expect(config.getChatCompression()).toEqual({
-      maxContextSize: 5000,
+      contextPercentageThreshold: 0.5,
     });
   });
 

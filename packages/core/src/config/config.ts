@@ -70,7 +70,7 @@ export interface BugCommandSettings {
 }
 
 export interface ChatCompressionSettings {
-  maxContextSize?: number;
+  contextPercentageThreshold?: number;
 }
 
 export interface SummarizeToolOutputSettings {

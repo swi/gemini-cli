@@ -484,6 +484,20 @@ export function loadSettings(workspaceDir: string): LoadedSettings {
     settingsErrors,
   );
 
+  // Validate chatCompression settings
+  const chatCompression = loadedSettings.merged.chatCompression;
+  if (
+    chatCompression &&
+    chatCompression.contextPercentageThreshold &&
+    (chatCompression.contextPercentageThreshold < 0 ||
+      chatCompression.contextPercentageThreshold > 1)
+  ) {
+    console.warn(
+      `Invalid value for chatCompression.contextPercentageThreshold: "${chatCompression.contextPercentageThreshold}". Please use a value between 0 and 1. Using default compression settings.`,
+    );
+    delete loadedSettings.merged.chatCompression;
+  }
+
   // Load environment with merged settings
   loadEnvironment(loadedSettings.merged);
 
