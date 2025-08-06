@@ -147,11 +147,20 @@ class VsCodeInstaller implements IdeInstaller {
   }
 }
 
+class DefaultIDEInstaller implements IdeInstaller {
+  async install(): Promise<InstallResult> {
+    return {
+      success: false,
+      message: `Auto-installation not supported. Install the extension directly through the marketplace.`,
+    };
+  }
+}
+
 export function getIdeInstaller(ide: DetectedIde): IdeInstaller | null {
   switch (ide) {
     case DetectedIde.VSCode:
       return new VsCodeInstaller();
     default:
-      return null;
+      return new DefaultIDEInstaller();
   }
 }
