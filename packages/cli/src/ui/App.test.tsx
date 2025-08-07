@@ -23,6 +23,7 @@ import process from 'node:process';
 import { useGeminiStream } from './hooks/useGeminiStream.js';
 import { useConsoleMessages } from './hooks/useConsoleMessages.js';
 import { StreamingState, ConsoleMessageItem } from './types.js';
+import { StreamingContext } from './contexts/StreamingContext.js';
 import { Tips } from './components/Tips.js';
 import { checkForUpdates, UpdateObject } from './utils/updateCheck.js';
 import { EventEmitter } from 'events';
@@ -932,11 +933,13 @@ describe('App UI', () => {
 
       it('should render the initial loading state correctly on a wide terminal', () => {
         const { lastFrame, unmount } = render(
-          <App
-            config={mockConfig as unknown as ServerConfig}
-            settings={mockSettings}
-            version={mockVersion}
-          />,
+          <StreamingContext.Provider value={StreamingState.Streaming}>
+            <App
+              config={mockConfig as unknown as ServerConfig}
+              settings={mockSettings}
+              version={mockVersion}
+            />
+          </StreamingContext.Provider>,
         );
         currentUnmount = unmount;
         expect(lastFrame()).toMatchSnapshot();
@@ -949,11 +952,13 @@ describe('App UI', () => {
         });
 
         const { lastFrame, unmount } = render(
-          <App
-            config={mockConfig as unknown as ServerConfig}
-            settings={mockSettings}
-            version={mockVersion}
-          />,
+          <StreamingContext.Provider value={StreamingState.Streaming}>
+            <App
+              config={mockConfig as unknown as ServerConfig}
+              settings={mockSettings}
+              version={mockVersion}
+            />
+          </StreamingContext.Provider>,
         );
         currentUnmount = unmount;
         expect(lastFrame()).toMatchSnapshot();
